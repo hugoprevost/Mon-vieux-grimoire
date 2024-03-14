@@ -3,9 +3,10 @@ const mongoose = require('mongoose')
 
 const booksRoutes = require('./routes/books')
 const userRoutes = require('./routes/user')
+const path = require('path');
 
 
-mongoose.connect('mongodb+srv://hugo:hugo@cluster0.yebctzj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',
+mongoose.connect('mongodb+srv://hugoprevost17200:MonVieuxGrimoire@monvieuxgrimoire.pkv8ldu.mongodb.net/?retryWrites=true&w=majority&appName=MonVieuxGrimoire',
   { 
     useNewUrlParser: true,
     useUnifiedTopology: true 
@@ -24,7 +25,9 @@ app.use((req, res, next) => {
 
 app.use(express.json())
 
-app.use('/api/books', booksRoutes)
 app.use('/api/auth', userRoutes)
+app.use('/api/books', booksRoutes)
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
 
 module.exports = app
