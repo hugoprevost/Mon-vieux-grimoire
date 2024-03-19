@@ -15,42 +15,32 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, callback) => {
     const name = file.originalname.split(' ').join('_')
-   // const extension = MIME_TYPES[file.mimetype]
-    callback(null, name + Date.now() + '.' + extension)
+    const extension = MIME_TYPES[file.mimetype]
+    callback(null, name + Date.now() + "." + extension)
   }
 })
 
-const filter = (req, file, callback) => {
-  if (file.mimetype.split("/")[0] === 'image') {
-      callback(null, true);
-  } else {
-      callback(new Error("Only image files are supported"));
+module.exports = multer({ storage: storage }).single("image");
+module.exports.resizeImage = (req, res, next) => {
+  if (!req.file) {
+    return next();
   }
-};
 
-const upload = multer({ storage: storage, fileFilter: filter }).single('image');
+  const filePath = req.file.path;
+  const fileName = req.file.filename;
+  const outputFilePath = path.join("images", `resized_${fileName}`);
 
-const optimize = (req, res, next) => {
-  if (req.file) {
-      const filePath = req.file.path;
-      const output = path.join('images', `opt_${req.file.filename}`);
-      sharp(filePath)
-          .resize({ width: null, height: 568, fit: 'inside', background: { r: 255, g: 255, b: 255, alpha: 0 } })
-          .webp()
-          .toFile(output)
-          .then(() => {
-              //delete older file, keep the resized one
-              fs.unlink(filePath, () => {
-                  req.file.path = output;
-                  next();
-              })
-          })
-          .catch(err => next(err));
-  } else {
+  sharp(filePath)
+    .resize({ width: 206, height: 260 })
+    .toFile(outputFilePath)
+    .then(() => {
+      fs.unlink(filePath, () => {
+        req.file.path = outputFilePath;
+        next();
+      });
+    })
+    .catch((err) => {
+      console.log(err);
       return next();
-  }
+    });
 };
-
-exports.upload = upload;
-exports.optimize = optimize;
-//module.exports = multer({storage: storage}).single('image')
