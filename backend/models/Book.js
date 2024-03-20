@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+//Schema des différentes informations d'un livre
 const bookSchema = mongoose.Schema({
   userId: { type: String, required: true },
   title: { type: String, required: true },
@@ -16,4 +17,5 @@ const bookSchema = mongoose.Schema({
   averageRating: { type: Number, get: function (v) { return Math.round(v * 10) / 10 } },
 })
 
+//exportation du schéma
 module.exports = mongoose.model('Book', bookSchema)
