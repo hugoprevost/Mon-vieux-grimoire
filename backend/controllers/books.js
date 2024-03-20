@@ -108,7 +108,7 @@ exports.createRating = (req, res, next) => {
     }
     // Vérification si la note est entre 0 et 5
     if (updatedRating.grade < 0 || updatedRating.grade > 5) {
-        return res.status(400).json({ message: 'rating must be between 0 and 5' })
+        return res.status(400).json({ message: 'La note doit être comprise entre 0 et 5' })
     }
     // Récupération grâce à l'ID du livre
     Book.findOne({ _id: req.params.id })
