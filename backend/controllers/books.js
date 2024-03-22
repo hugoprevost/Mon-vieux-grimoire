@@ -36,7 +36,7 @@ exports.modifyBook = (req, res, next) => {
         .then((book) => {
             // Vérification de l'ID du créateur pour vois si il peut le modifier
             if (book.userId != req.auth.userId) {
-                res.status(401).json({ message : 'Non autorisé'})
+                res.status(403).json({ message : 'Non autorisé'})
             } else {
                 // Séparation du nom du fichier image existant
                 const filename = book.imageUrl.split('/images/')[1]
@@ -61,7 +61,7 @@ exports.deleteBook = (req, res, next) => {
         .then(book => {
             // Vérification si l'ID du créateur correspond à celui qui veut le supprimer
             if (book.userId != req.auth.userId) {
-                res.status(401).json({message: 'Non autorisé'})
+                res.status(403).json({message: 'Non autorisé'})
             } else {
                 // Séparation du nom du fichier image existant
                 const filename = book.imageUrl.split('/images/')[1]
@@ -69,11 +69,11 @@ exports.deleteBook = (req, res, next) => {
                 fs.unlink(`images/${filename}`, () => {
                     Book.deleteOne({_id: req.params.id})
                         .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
-                        .catch(error => res.status(401).json({ error }))
+                        .catch(error => res.status(400).json({ error }))
                     })
                 }
             })
-        .catch( error => { res.status(500).json({ error })})
+        .catch( error => { res.status(404).json({ error })})
 }
 
 // Récupération d'un livre
@@ -89,7 +89,7 @@ exports.getAllBook = (req, res, next) => {
     // Renvoie un tableau de tous les livres
     Book.find()
         .then(books => res.status(200).json(books))
-        .catch(error => res.status(400).json({ error }))
+        .catch(error => res.status(404).json({ error }))
 }
 
 // Récupération des livres les mieux notés
