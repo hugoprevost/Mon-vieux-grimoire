@@ -5,10 +5,13 @@ const booksRoutes = require('./routes/books')
 const userRoutes = require('./routes/user')
 const path = require('path')
 
+
 // Connexion à la base de donnée
-mongoose.connect('mongodb+srv://hugoprevost17200:MonVieuxGrimoire@monvieuxgrimoire.pkv8ldu.mongodb.net/?retryWrites=true&w=majority&appName=MonVieuxGrimoire', { useNewUrlParser: true, useUnifiedTopology: true })
+const dotenv = require('dotenv')
+dotenv.config()
+mongoose.connect('mongodb+srv://'+ process.env.MONGO_USER + ':'+ process.env.MONGO_PASSWORD + '@monvieuxgrimoire.pkv8ldu.mongodb.net/?retryWrites=true&w=majority&appName=MonVieuxGrimoire', { useNewUrlParser: true, useUnifiedTopology: true })
         .then(() => console.log('Connexion à MongoDB réussie !'))
-        .catch(() => console.log('Connexion à MongoDB échouée !'))
+        .catch(() => console.log(process.env.MONGO_USER))
 
 // Création de l'application
 const app = express()
